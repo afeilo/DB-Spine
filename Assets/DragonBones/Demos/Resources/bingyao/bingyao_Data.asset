@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a64e5b0e436d4bed9780211ae245f7b, type: 3}
+  m_Name: bingyao_Data
+  m_EditorClassIdentifier: 
+  dataName: bingyao
+  dragonBonesJSON: {fileID: 4900000, guid: 34b5bd87cfb79b3439be69b0c9198d42, type: 3}
+  textureAtlas:
+  - textureAtlasJSON: {fileID: 4900000, guid: 8505e48d48902354dae56d2c7a5a439f, type: 3}
+    texture: {fileID: 2800000, guid: bfe2a5bd9a3512941ac4c6778fd8c03f, type: 3}
+    material: {fileID: 2100000, guid: eea22e110c61f4f4d933f356dacd009e, type: 2}
+    uiMaterial: {fileID: 2100000, guid: eac629fd5755005418811988b6d7a230, type: 2}
