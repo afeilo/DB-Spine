@@ -12,7 +12,9 @@ public class UgArmature : UgTrans
     public Dictionary<string, UgSlot> slots = new Dictionary<string, UgSlot>();
     public Dictionary<string, UgSprite> sprites = new Dictionary<string, UgSprite>();
     Dictionary<string, UgData.AnimationData> animations = new Dictionary<string, UgData.AnimationData>();
-
+    public List<UgBone> bonesList = new List<UgBone>();
+    public List<UgSlot> slotList = new List<UgSlot>();
+    public List<UgSprite> spriteList = new List<UgSprite>();
     UgData.AnimationData anim;
     public void Init(UgData.ArmatureData data)
     {
@@ -25,16 +27,29 @@ public class UgArmature : UgTrans
         {
             UgData.BoneData boneData = data.boneDatas[i];
             UgBone bone = new UgBone();
+            if (boneData.parent != "root")
+            {
+                UgBone parent;
+                bones.TryGetValue(boneData.parent, out parent);
+                bone.parent = parent;
+            }
             bone.Init(boneData);
             bones.Add(boneData.name, bone);
+            bonesList.Add(bone);
         }
 
         for (int i = 0; i < data.slotDatas.Length; i++)
         {
             UgData.SlotData slotData = data.slotDatas[i];
+            Debug.Log(slotData.name);
             UgSlot slot = new UgSlot();
             slot.Init(slotData);
             slots.Add(slot.name, slot);
+            UgBone parent;
+            bones.TryGetValue(slotData.parent, out parent);
+            slot.parent = parent;
+            parent.addSlot(slot);
+            slotList.Add(slot);
         }
 
         for (int i = 0; i < data.displayDatas.Length; i++)
@@ -43,6 +58,10 @@ public class UgArmature : UgTrans
             UgSprite sprite = new UgSprite();
             sprite.Init(disData);
             sprites.Add(disData.name, sprite);
+            UgSlot parent;
+            slots.TryGetValue(disData.parent, out parent);
+            parent.addSprite(sprite);
+            spriteList.Add(sprite);
         }
 
         for (int i = 0; i < data.animations.Length; i++)

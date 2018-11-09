@@ -30,11 +30,24 @@ public class ReplaceAnimtion : BaseDemo
         UnityFactory.factory.ReplaceAnimation(this._armatureCompB.armature, sourceArmature);
         UnityFactory.factory.ReplaceAnimation(this._armatureCompC.armature, sourceArmature);
 
-        //
-        this._armatureCompA.transform.localPosition = new Vector3(-4.0f, -3.0f, 0.0f);
+        for (int i = 0; i < 800; i++) {
+            var _armatureComp = UnityFactory.factory.BuildArmatureComponent("mecha_2903","","","",null,false);
+            UnityFactory.factory.ReplaceAnimation(_armatureComp.armature, sourceArmature);
+            _armatureComp.transform.localPosition = new Vector3(0.0f, 0.0f, i);
+            _armatureComp.animation.Play();
+        }
+            //
+            this._armatureCompA.transform.localPosition = new Vector3(-4.0f, -3.0f, 0.0f);
         this._armatureCompB.transform.localPosition = new Vector3(0.0f, -3.0f, 0.0f);
         this._armatureCompC.transform.localPosition = new Vector3(4.0f, -3.0f, 0.0f);
         this._armatureCompD.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
+                UnityFactory.factory.LoadDragonBonesData("bingyao/bingyao_ske");
+        UnityFactory.factory.LoadTextureAtlasData("bingyao/bingyao_tex");
+        //var sourceArmature = UnityFactory.factory.GetArmatureData("bingyao"); 
+            var _armatureComp2 = UnityFactory.factory.BuildArmatureComponent("armatureName");
+            //UnityFactory.factory.ReplaceAnimation(_armatureComp.armature, sourceArmature);
+            _armatureComp2.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
     }
 
     // Update is called once per frame

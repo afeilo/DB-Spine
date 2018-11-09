@@ -96,31 +96,31 @@ namespace DragonBones
 
         private void LateUpdate()
         {
-            if (this.dirty)
-            {
-                this.BeginCombineMesh();
-                this.dirty = false;
-            }
+            //if (this.dirty)
+            //{
+            //    this.BeginCombineMesh();
+            //    this.dirty = false;
+            //}
 
-            if (this.meshBuffers == null)
-            {
-                return;
-            }
+            //if (this.meshBuffers == null)
+            //{
+            //    return;
+            //}
 
-            for (var i = 0; i < this.meshBuffers.Length; i++)
-            {
-                var meshBuffer = this.meshBuffers[i];
-                if (meshBuffer.zorderDirty)
-                {
-                    meshBuffer.UpdateOrder();
-                    meshBuffer.zorderDirty = false;
-                }
-                else if (meshBuffer.vertexDirty)
-                {
-                    meshBuffer.UpdateVertices();
-                    meshBuffer.vertexDirty = false;
-                }
-            }
+            //for (var i = 0; i < this.meshBuffers.Length; i++)
+            //{
+            //    var meshBuffer = this.meshBuffers[i];
+            //    if (meshBuffer.zorderDirty)
+            //    {
+            //        meshBuffer.UpdateOrder();
+            //        meshBuffer.zorderDirty = false;
+            //    }
+            //    else if (meshBuffer.vertexDirty)
+            //    {
+            //        meshBuffer.UpdateVertices();
+            //        meshBuffer.vertexDirty = false;
+            //    }
+            //}
         }
 
         public void BeginCombineMesh()

@@ -5,10 +5,18 @@ using UnityEngine;
 public class UgSprite : UgTrans
 {
     public Vector2 pivot = new Vector2(0.5f, 0.5f);
+    public int offset = -1;
+    public int count = -1;
+    public int triangleOffset = -1;
+    public int triangleCount = -1;
     public void Init(UgData.DisplayData data)
     {
         base.Init(data);
         this.pivot = data.pivot;
+        this.offset = data.offset;
+        this.count = data.count;
+        this.triangleOffset = data.triangleOffset;
+        this.triangleCount = data.triangleCount;
     }
 
     public override GameObject CreateTest(Transform trans)

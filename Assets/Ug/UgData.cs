@@ -9,15 +9,23 @@ using SimpleJSON;
 public class UgData : ScriptableObject
 {
 #if UNITY_EDITOR
+    public static UgData ugData;
+    public static List<float> vertices = new List<float>();
+    public static List<float> uvs = new List<float>();
+    public static List<int> triangles = new List<int>();
     [MenuItem("Assets/UgData")]
     public static void MakeUgData()
     {
+        vertices = new List<float>();
+        uvs = new List<float>();
+        triangles = new List<int>();
         //string path = AssetDatabase.GetAssetPath(Selection.activeObject);
-        string path = "Assets/Demo/Dragon/Dragon.json";
+        string path = "Assets/bingyao_ske.json";
+        string texture_path = "Assets/bingyao_tex.json";
         JSONClass json = JSON.Parse(File.ReadAllText(path).Replace("null", "\"null\"")).AsObject;
 
         string save = "Assets/d.asset";
-        UgData ugData = AssetDatabase.LoadAssetAtPath<UgData>(save);
+        ugData = AssetDatabase.LoadAssetAtPath<UgData>(save);
         if (ugData == null)
         {
             ugData = ScriptableObject.CreateInstance<UgData>();
@@ -38,11 +46,31 @@ public class UgData : ScriptableObject
             ads[i] = DecodeArmature(json, armature[i].AsObject);
         }
 
-
-
+        JSONClass json_tex = JSON.Parse(File.ReadAllText(texture_path).Replace("null", "\"null\"")).AsObject;
+        TextureData td = new TextureData();
+        td.width = json_tex["width"].AsInt;
+        td.height = json_tex["height"].AsInt;
+        td.imagePath = json_tex["imagePath"].Value;
+        td.name = json_tex["name"].Value;
+        List<SubTextureData> stds = new List<SubTextureData>();
+        JSONArray sub_textures = json_tex["SubTexture"].AsArray;
+        for (int i = 0; i < sub_textures.Count; i++)
+        {
+            SubTextureData std = new SubTextureData();
+            JSONClass jc = sub_textures[i].AsObject;
+            std.width = jc["width"].AsInt;
+            std.height = jc["height"].AsInt;
+            std.x = jc["x"].AsInt;
+            std.y = jc["y"].AsInt;
+            std.name = jc["name"].Value;
+            stds.Add(std);
+        }
+        td.datas = stds.ToArray();
+        ads[0].textureDatas = td;
         ugData.armatures = ads;
         EditorUtility.SetDirty(ugData);
         AssetDatabase.SaveAssets();
+
     }
 
     static ArmatureData DecodeArmature(JSONClass parent, JSONClass json)
@@ -51,6 +79,7 @@ public class UgData : ScriptableObject
         data.name = json["name"].Value;
         data.frameRate = TryGetInt(json, "frameRate", parent["frameRate"].AsInt);
         data.type = TryGetString(json, "type", "Armature");
+        data.vertexDatas = new VertexData();
 
         //bone
         JSONArray bones = json["bone"].AsArray;
@@ -91,7 +120,9 @@ public class UgData : ScriptableObject
             }
         }
         data.displayDatas = displayData.ToArray();
-
+        data.vertexDatas.vertices = vertices.ToArray();
+        data.vertexDatas.uvs = uvs.ToArray();
+        data.vertexDatas.triangles = triangles.ToArray();
 
         JSONArray animations = json["animation"].AsArray;
         data.animations = new AnimationData[animations.Count];
@@ -133,8 +164,28 @@ public class UgData : ScriptableObject
         data.name = json["name"];
         data.parent = parent;
 
-        data.pivot = TryGetVector2(json, "pivot", Vector2.one * 0.5f);
+        //data.pivot = TryGetVector2(json, "pivot", Vector2.one * 0.5f);
         TryGetTransform(json, data);
+        JSONArray verticesjson = json["vertices"].AsArray;
+        JSONArray uvsjson = json["uvs"].AsArray;
+        JSONArray trianglesjson = json["triangles"].AsArray;
+        if (verticesjson.Count > 0) {
+            data.offset = vertices.Count / 2;
+            data.count = verticesjson.Count / 2;
+            data.triangleOffset = triangles.Count;
+            data.triangleCount = trianglesjson.Count;
+            for (int i = 0; i < verticesjson.Count; i++)
+            {
+                vertices.Add(verticesjson[i].AsFloat);
+                uvs.Add(uvsjson[i].AsFloat);
+            }
+            for (int i = 0; i < trianglesjson.Count; i++)
+            {
+                triangles.Add(trianglesjson[i].AsInt);
+            }
+            
+        }
+
 
         return data;
     }
@@ -312,7 +363,8 @@ public class UgData : ScriptableObject
         public SlotData[] slotDatas;
         public DisplayData[] displayDatas;
         public AnimationData[] animations;
-
+        public VertexData vertexDatas;
+        public TextureData textureDatas;
     }
 
     [System.Serializable]
@@ -347,6 +399,10 @@ public class UgData : ScriptableObject
     public class DisplayData : TransformData
     {
         public Vector2 pivot = new Vector2(0.5f, 0.5f);
+        public int offset = -1;
+        public int count = -1;
+        public int triangleOffset = -1;
+        public int triangleCount = -1;
     }
 
     [System.Serializable]
@@ -366,6 +422,14 @@ public class UgData : ScriptableObject
         public float scale;
         public float offset;
         public BoneFrameData[] frames = new BoneFrameData[0];
+    }
+
+    [System.Serializable]
+    public class VertexData 
+    {
+        public float[] vertices = new float[0];
+        public float[] uvs = new float[0];
+        public int[] triangles = new int[0];
     }
 
     [System.Serializable]
@@ -408,5 +472,25 @@ public class UgData : ScriptableObject
     public string version;
     public int frameRate;
     public Texture2D tex;
+    public Material matrial;
     public ArmatureData[] armatures;
+    [System.Serializable]
+    public class TextureData 
+    {
+        public int width;
+        public int height;
+        public string imagePath;
+        public string name;
+        public SubTextureData[] datas;
+
+    }
+    [System.Serializable]
+    public class SubTextureData {
+        public string name;
+        public int width;
+        public int height;
+        public int x;
+        public int y;
+        
+    }
 }

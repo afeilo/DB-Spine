@@ -604,11 +604,15 @@ namespace DragonBones
                                 this._meshBuffer.uvBuffers[i].x = (sourceX + u * sourceWidth) / textureAtlasWidth;
                                 this._meshBuffer.uvBuffers[i].y = 1.0f - (sourceY + v * sourceHeight) / textureAtlasHeight;
                             }
-
+                            Debug.Log(sourceWidth + "," + sourceHeight);
+                            Debug.Log(scaleWidth + "," + scaleHeight);
+                            
                             //vertices
                             this._meshBuffer.rawVertextBuffers[i].x = u * scaleWidth - pivotX;
                             this._meshBuffer.rawVertextBuffers[i].y = (1.0f - v) * scaleHeight - pivotY;
-
+                            Debug.Log(pivotX + "," + pivotY);
+                            Debug.Log(this._meshBuffer.rawVertextBuffers[i].x + "," + this._meshBuffer.rawVertextBuffers[i].y);
+                            Debug.Log("-----------");
                             this._meshBuffer.vertexBuffers[i].x = this._meshBuffer.rawVertextBuffers[i].x;
                             this._meshBuffer.vertexBuffers[i].y = this._meshBuffer.rawVertextBuffers[i].y;
                         }

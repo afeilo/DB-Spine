@@ -9,12 +9,17 @@ public class UgBone : UgTrans
     int frameIndex = 0;
     UgData.BoneFrameData cacheFrame;
     Vector2 cacheFrameRange;
+    public UgBone parent;
+    public List<UgSlot> slots;
     public void Init(UgData.BoneData data)
     {
         base.Init(data);
+        slots = new List<UgSlot>();
     }
 
-
+    public void addSlot(UgSlot slot) {
+        slots.Add(slot);
+    }
 
     public void SetAnimData(UgData.BoneFrameData[] frames)
     {
