@@ -37,7 +37,7 @@ public class UgRole : MonoBehaviour
             currentArmature = arm;
             arm.CreateTest(transform);
         }
-        //Play("stand");
+        Play("attack");
     }
 
     public void SetCurrentAramture(string name)
@@ -96,6 +96,7 @@ public class UgRole : MonoBehaviour
                         float targetHeight = 0;
                         float targetX = 0;
                         float targetY = 0;
+                        int weightoffset = d_data.weightOffset;
                         for (int j = 0; j < subTextureDatas.Length; j++)
                         {
                             if (subTextureDatas[j].name == d_data.name)
@@ -110,10 +111,32 @@ public class UgRole : MonoBehaviour
                         var count = vertices.Count;
                         for (int j = 0; j < d_data.count; j++)
                         {
-                            Vector3 vertex = new Vector3();
+                            Vector2 vertex = new Vector2();
                             Vector2 uv = new Vector2();
-                            vertex.x = vertexDatas.vertices[(d_data.offset + j) * 2];
-                            vertex.y = vertexDatas.vertices[(d_data.offset + j) * 2 + 1];
+
+                            
+                            Vector2 pos = new Vector2(vertexDatas.vertices[(d_data.offset + j) * 2],vertexDatas.vertices[(d_data.offset + j) * 2 + 1]);
+                            int boneCount = (int)vertexDatas.weights[weightoffset++];
+                            //for (int c = 0; c < boneCount; c++)
+                            //{
+                            //    Debug.Log(vertexDatas.weights[weightoffset]);
+                            //    UgBone bone = currentArmature.bonesList[(int)vertexDatas.weights[weightoffset]];
+                            //    Debug.Log(bone.name);
+                            //    weightoffset++;
+                            //    if (bone != null)
+                            //    {
+                            //        pos = new Vector2(pos.x * bone.scale.x, pos.y * bone.scale.y);
+                            //        var r = 2 * Mathf.PI * bone.rotation / 360;
+                            //        pos = new Vector2(pos.x * Mathf.Cos(r) + pos.y * Mathf.Sin(r), -pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
+                            //        pos = pos + bone.pos;
+                            //        bone = bone.parent;
+                            //    }
+                            //    Debug.Log(vertexDatas.weights[weightoffset]);
+                            //    vertex += vertexDatas.weights[weightoffset] * pos;
+                            //    weightoffset++;
+                            //}
+                            vertex = pos;
+                            Debug.Log("---------");
                             uv.x = (vertexDatas.uvs[(d_data.offset + j) * 2] * targetWidth + targetX) / sourceWidth;
                             uv.y = 1 - (vertexDatas.uvs[(d_data.offset + j) * 2 + 1] * targetHeight + targetY) / sourceHeight;
                             //vertices[d_data.offset + j] = vertex;
@@ -194,10 +217,10 @@ public class UgRole : MonoBehaviour
                             UgBone bone = slot.parent;
                             Vector2 pos = d_data.pos;
                             while (bone != null) {
-                                pos = new Vector2(pos.x * bone.scale.x, pos.y * bone.scale.y);
-                                var r = 2*Mathf.PI*bone.rotation/360;
+                                pos = new Vector2(pos.x * ( bone.scale).x, pos.y * (bone.scale).y);
+                                var r = 2*Mathf.PI*(bone.rotation)/360;
                                 pos = new Vector2(pos.x * Mathf.Cos(r) + pos.y * Mathf.Sin(r), -pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
-                                pos = pos + bone.pos;
+                                pos = pos + (bone.pos);
                                 bone = bone.parent;
                             }
                             vertex.x = pos.x + x;

@@ -104,6 +104,8 @@ public class UgArmature : UgTrans
         for (int i = 0; i < anim.boneAnimations.Length; i++)
         {
             UgData.BoneAnimationCollect bac = anim.boneAnimations[i];
+            Debug.Log(bac.name);
+            Debug.Log(bac.frames.Length);
             bones[bac.name].SetAnimData(bac.frames);
         }
 

@@ -11,9 +11,16 @@ public class UgBone : UgTrans
     Vector2 cacheFrameRange;
     public UgBone parent;
     public List<UgSlot> slots;
+    private Vector2 startPos;
+    private Vector2 startScale = Vector2.one;
+    private float startRotation = 0;
+
     public void Init(UgData.BoneData data)
     {
         base.Init(data);
+        startPos = data.pos;
+        startRotation = data.rotation;
+        startScale = data.scale;
         slots = new List<UgSlot>();
     }
 
@@ -43,8 +50,9 @@ public class UgBone : UgTrans
 
     public void UpdateFrame(float frame)
     {
+        //Debug.Log("UpdateFrame1");
         if (frames == null) return;
-      
+        //Debug.Log("UpdateFrame2");
 
         if (frame < cacheFrameRange.x)
             frameIndex = -1;
@@ -72,11 +80,11 @@ public class UgBone : UgTrans
             float d = g / t;
 
             if (next.transPos)
-                pos = Vector2.Lerp(cacheFrame.pos, next.pos, d);
+                pos = Vector2.Lerp(startPos, startPos + next.pos, d);
             if (next.transScale)
-                scale = Vector2.Lerp(cacheFrame.scale, next.scale, d);
+                scale = Vector2.Lerp(startScale, startScale + next.scale, d);
             if (next.transRotate)
-                rotation = Mathf.Lerp(cacheFrame.rotation, next.rotation, d);
+                rotation = Mathf.Lerp(startRotation,startRotation + next.rotation, d);
         }
 
 

@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class UgMatrix2D : MonoBehaviour {
 
-	public float a, b, c, d, tx, ty;
+    /*
+     *  a 水平缩放
+     *  b 水平拉伸
+     *  c 垂直拉伸
+     *  d 垂直缩放
+     *  x 水平位移
+     *  y 垂直位移
+     */
+    public float a, b, c, d, tx, ty;
 		const float DEG_TO_RAD = Mathf.PI/180f;
 		const float PI = Mathf.PI;
 

@@ -9,6 +9,8 @@ public class UgSprite : UgTrans
     public int count = -1;
     public int triangleOffset = -1;
     public int triangleCount = -1;
+    public int weightOffset = -1;
+    public int weightCount = -1;
     public void Init(UgData.DisplayData data)
     {
         base.Init(data);
@@ -17,6 +19,8 @@ public class UgSprite : UgTrans
         this.count = data.count;
         this.triangleOffset = data.triangleOffset;
         this.triangleCount = data.triangleCount;
+        this.weightOffset = data.weightOffset;
+        this.weightCount = data.weightCount;
     }
 
     public override GameObject CreateTest(Transform trans)

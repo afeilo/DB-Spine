@@ -13,12 +13,14 @@ public class UgData : ScriptableObject
     public static List<float> vertices = new List<float>();
     public static List<float> uvs = new List<float>();
     public static List<int> triangles = new List<int>();
+    public static List<float> weights = new List<float>();
     [MenuItem("Assets/UgData")]
     public static void MakeUgData()
     {
         vertices = new List<float>();
         uvs = new List<float>();
         triangles = new List<int>();
+        weights = new List<float>();
         //string path = AssetDatabase.GetAssetPath(Selection.activeObject);
         string path = "Assets/bingyao_ske.json";
         string texture_path = "Assets/bingyao_tex.json";
@@ -123,7 +125,7 @@ public class UgData : ScriptableObject
         data.vertexDatas.vertices = vertices.ToArray();
         data.vertexDatas.uvs = uvs.ToArray();
         data.vertexDatas.triangles = triangles.ToArray();
-
+        data.vertexDatas.weights = weights.ToArray();
         JSONArray animations = json["animation"].AsArray;
         data.animations = new AnimationData[animations.Count];
         for (int i = 0; i < animations.Count; i++)
@@ -169,11 +171,14 @@ public class UgData : ScriptableObject
         JSONArray verticesjson = json["vertices"].AsArray;
         JSONArray uvsjson = json["uvs"].AsArray;
         JSONArray trianglesjson = json["triangles"].AsArray;
+        JSONArray weightsjson = json["weights"].AsArray;
         if (verticesjson.Count > 0) {
             data.offset = vertices.Count / 2;
             data.count = verticesjson.Count / 2;
             data.triangleOffset = triangles.Count;
             data.triangleCount = trianglesjson.Count;
+            data.weightOffset = weights.Count;
+            data.weightCount = weightsjson.Count;
             for (int i = 0; i < verticesjson.Count; i++)
             {
                 vertices.Add(verticesjson[i].AsFloat);
@@ -182,6 +187,10 @@ public class UgData : ScriptableObject
             for (int i = 0; i < trianglesjson.Count; i++)
             {
                 triangles.Add(trianglesjson[i].AsInt);
+            }
+            for (int i = 0; i < weightsjson.Count; i++)
+            {
+                weights.Add(weightsjson[i].AsFloat);
             }
             
         }
@@ -225,6 +234,7 @@ public class UgData : ScriptableObject
         JSONArray frames = json["frame"].AsArray;
         data.frames = new BoneFrameData[frames.Count];
         int start = 0;
+        Debug.Log(frames.Count);
         for (int i = 0; i < frames.Count; i++)
         {
             JSONClass jd = frames[i].AsObject;
@@ -403,6 +413,8 @@ public class UgData : ScriptableObject
         public int count = -1;
         public int triangleOffset = -1;
         public int triangleCount = -1;
+        public int weightOffset = -1;
+        public int weightCount = -1;
     }
 
     [System.Serializable]
@@ -430,6 +442,7 @@ public class UgData : ScriptableObject
         public float[] vertices = new float[0];
         public float[] uvs = new float[0];
         public int[] triangles = new int[0];
+        public float[] weights = new float[0];
     }
 
     [System.Serializable]

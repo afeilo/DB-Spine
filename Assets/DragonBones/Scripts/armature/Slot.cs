@@ -357,7 +357,7 @@ namespace DragonBones
 
                     this._pivotX = imageDisplayData.pivot.x;
                     this._pivotY = imageDisplayData.pivot.y;
-                    Debug.Log(_pivotX + "," + _pivotY);
+                    //Debug.Log(_pivotX + "," + _pivotY);
                     
                     var rect = frame != null ? frame : this._textureData.region;
                     var width = rect.width;
@@ -371,14 +371,14 @@ namespace DragonBones
 
                     this._pivotX *= width * scale;
                     this._pivotY *= height * scale;
-                    Debug.Log(_pivotX + "," + _pivotY);
+                    //Debug.Log(_pivotX + "," + _pivotY);
                     if (frame != null)
                     {
                         this._pivotX += frame.x * scale;
                         this._pivotY += frame.y * scale;
                     }
 
-                    Debug.Log("-----------");
+                    //Debug.Log("-----------");
 
                     // Update replace pivot. TODO
                     if (this._displayData != null && rawDisplayData != null && this._displayData != rawDisplayData)
