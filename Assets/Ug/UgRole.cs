@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,7 +87,7 @@ public class UgRole : MonoBehaviour
         //{
         foreach (UgSlot slot in currentArmature.slotList)
             {
-                UgSprite d_data = slot.sprites[0];
+                UgSprite d_data = slot.children[0] as UgSprite;
                 //foreach (UgSprite d_data in slot.sprites)
                 //{
 
@@ -111,32 +112,72 @@ public class UgRole : MonoBehaviour
                         var count = vertices.Count;
                         for (int j = 0; j < d_data.count; j++)
                         {
-                            Vector2 vertex = new Vector2();
+                            Vector2 vertex = Vector2.zero;
                             Vector2 uv = new Vector2();
 
                             
                             Vector2 pos = new Vector2(vertexDatas.vertices[(d_data.offset + j) * 2],vertexDatas.vertices[(d_data.offset + j) * 2 + 1]);
+                            Vector2 result = Vector2.zero;
                             int boneCount = (int)vertexDatas.weights[weightoffset++];
+                            UgMatrix2D matrix = new UgMatrix2D();
+                            Vector2 scale = Vector2.one;
+                            float rotation = 0f;
+                            Vector2 trans = Vector3.zero;
+                            for (int c = 0; c < boneCount; c++)
+                            {
+                                UgBone bone = currentArmature.bonesList[(int)vertexDatas.weights[weightoffset]];
+                                weightoffset++;
+                                if (bone != null)
+                                {
+                                    //Debug.Log(bone.deltaMatrix.ToString());
+                                    //Debug.Log(bone.matrix.tx - bone.startMatrix.tx);
+                                    //matrix.a +=  (bone.matrix.a - bone.startMatrix.a) * vertexDatas.weights[weightoffset];
+                                    //matrix.b +=  (bone.matrix.b - bone.startMatrix.b) * vertexDatas.weights[weightoffset];
+                                    //matrix.c +=  (bone.matrix.c - bone.startMatrix.c) * vertexDatas.weights[weightoffset];
+                                    //matrix.d +=  (bone.matrix.d - bone.startMatrix.d) * vertexDatas.weights[weightoffset];
+                                    //matrix.tx += (bone.matrix.tx - bone.startMatrix.tx) * vertexDatas.weights[weightoffset];
+                                    //matrix.ty += (bone.matrix.ty - bone.startMatrix.ty) * vertexDatas.weights[weightoffset];
+                                    //matrix.a += (bone.deltaMatrix.a) * vertexDatas.weights[weightoffset];
+                                    //matrix.b += (bone.deltaMatrix.b) * vertexDatas.weights[weightoffset];
+                                    //matrix.c += (bone.deltaMatrix.c) * vertexDatas.weights[weightoffset];
+                                    //matrix.d += (bone.deltaMatrix.d) * vertexDatas.weights[weightoffset];
+                                    //matrix.tx += (bone.deltaMatrix.tx) * vertexDatas.weights[weightoffset];
+                                    //matrix.ty += (bone.deltaMatrix.ty) * vertexDatas.weights[weightoffset];
+                                    scale += (bone.scale - bone.startScale) * vertexDatas.weights[weightoffset];
+                                    rotation += (bone.rotation - bone.startRotation) * vertexDatas.weights[weightoffset];
+                                    trans += (bone.pos - bone.startPos) * vertexDatas.weights[weightoffset];
+                                    //vertex += bone.matrix.TransformPoint(pos.x, pos.y) * vertexDatas.weights[weightoffset];
+                                }
+                                weightoffset++;
+                            }
+                            matrix.CreateBox(scale.x, scale.y, rotation, trans.x, trans.y);
+                            //matrix.Concat(d_data.parent.matrix);
+                            vertex = matrix.TransformPoint(pos.x, pos.y);
+                            //pos = new Vector2(pos.x * scale.x, pos.y * scale.y);
+                            //var r = -2 * Mathf.PI * rotation / 360;
+                            //pos = new Vector2(pos.x * Mathf.Cos(r) - pos.y * Mathf.Sin(r), pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
+                            //pos = pos + trans;
+                            //vertex = pos;
+                            //Vector2 scale = Vector2.one;
+                            //float rotation = 0f;
+                            //Vector2 trans = Vector3.zero;
                             //for (int c = 0; c < boneCount; c++)
                             //{
-                            //    Debug.Log(vertexDatas.weights[weightoffset]);
                             //    UgBone bone = currentArmature.bonesList[(int)vertexDatas.weights[weightoffset]];
-                            //    Debug.Log(bone.name);
                             //    weightoffset++;
                             //    if (bone != null)
                             //    {
-                            //        pos = new Vector2(pos.x * bone.scale.x, pos.y * bone.scale.y);
-                            //        var r = 2 * Mathf.PI * bone.rotation / 360;
-                            //        pos = new Vector2(pos.x * Mathf.Cos(r) + pos.y * Mathf.Sin(r), -pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
-                            //        pos = pos + bone.pos;
-                            //        bone = bone.parent;
+                            //        scale += (bone.scale-bone.startScale) * vertexDatas.weights[weightoffset];
+                            //        rotation += (bone.rotation-bone.startRotation) * vertexDatas.weights[weightoffset];
+                            //        trans += (bone.pos-bone.startPos) * vertexDatas.weights[weightoffset];
                             //    }
-                            //    Debug.Log(vertexDatas.weights[weightoffset]);
-                            //    vertex += vertexDatas.weights[weightoffset] * pos;
                             //    weightoffset++;
                             //}
-                            vertex = pos;
-                            Debug.Log("---------");
+                            //pos = new Vector2(pos.x * scale.x, pos.y * scale.y);
+                            //var r = 2 * Mathf.PI * rotation / 360;
+                            //pos = new Vector2(pos.x * Mathf.Cos(r) - pos.y * Mathf.Sin(r), pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
+                            //pos = pos + trans;
+                            //vertex = pos;
                             uv.x = (vertexDatas.uvs[(d_data.offset + j) * 2] * targetWidth + targetX) / sourceWidth;
                             uv.y = 1 - (vertexDatas.uvs[(d_data.offset + j) * 2 + 1] * targetHeight + targetY) / sourceHeight;
                             //vertices[d_data.offset + j] = vertex;
@@ -214,17 +255,22 @@ public class UgRole : MonoBehaviour
 
                             Vector3 vertex = new Vector3();
                             Vector2 uv = new Vector2();
-                            UgBone bone = slot.parent;
-                            Vector2 pos = d_data.pos;
-                            while (bone != null) {
-                                pos = new Vector2(pos.x * ( bone.scale).x, pos.y * (bone.scale).y);
-                                var r = 2*Mathf.PI*(bone.rotation)/360;
-                                pos = new Vector2(pos.x * Mathf.Cos(r) + pos.y * Mathf.Sin(r), -pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
-                                pos = pos + (bone.pos);
-                                bone = bone.parent;
-                            }
-                            vertex.x = pos.x + x;
-                            vertex.y = pos.y + y;
+                            Vector2 pos = d_data.matrix.TransformPoint(x, y);
+                            //Vector2 pos = new Vector2(x * (d_data.scale).x, y * (d_data.scale).y);
+                            //var r = -2 * Mathf.PI * (d_data.rotation) / 360;
+                            //pos = new Vector2(pos.x * Mathf.Cos(r) - pos.y * Mathf.Sin(r), pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
+                            //pos = pos + d_data.pos;
+                            //var bone = d_data.parent;
+                            //while (bone != null)
+                            //{
+                            //    pos = new Vector2(pos.x * (bone.scale).x, pos.y * (bone.scale).y);
+                            //    r = -2 * Mathf.PI * (bone.rotation) / 360;
+                            //    pos = new Vector2(pos.x * Mathf.Cos(r) - pos.y * Mathf.Sin(r), pos.x * Mathf.Sin(r) + pos.y * Mathf.Cos(r));
+                            //    pos = pos + (bone.pos);
+                            //    bone = bone.parent;
+                            //}
+                            vertex.x = pos.x;
+                            vertex.y = pos.y;
                             //Debug.Log(vertex.x + "," + vertex.y);
                             //Debug.Log("-----------");
                             uv.x = (u * targetWidth + targetX) / sourceWidth;

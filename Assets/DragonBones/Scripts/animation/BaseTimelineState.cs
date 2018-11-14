@@ -22,6 +22,7 @@
  */
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace DragonBones
 {
@@ -409,7 +410,7 @@ namespace DragonBones
             var blendWeight = this.bone._blendState.blendWeight;
             var animationPose = this.bone.animationPose;
             var result = this.bonePose.result;
-
+            Debug.Log(blendWeight);
             if (state == 2)
             {
                 animationPose.x += result.x * blendWeight;

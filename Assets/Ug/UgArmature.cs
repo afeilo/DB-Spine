@@ -27,12 +27,20 @@ public class UgArmature : UgTrans
         {
             UgData.BoneData boneData = data.boneDatas[i];
             UgBone bone = new UgBone();
-            if (boneData.parent != "root")
-            {
-                UgBone parent;
-                bones.TryGetValue(boneData.parent, out parent);
-                bone.parent = parent;
-            }
+            //if (boneData.parent != null)
+            //{
+            //    UgBone parent;
+            //    bones.TryGetValue(boneData.parent, out parent);
+            //    if (null != parent)
+            //    {
+            //        parent.AddChild(bone);
+            //    }
+            //}
+            //else 
+            //{
+            //    AddChild(bone);
+            //    //bone.parent = this;
+            //}
             bone.Init(boneData);
             bones.Add(boneData.name, bone);
             bonesList.Add(bone);
@@ -41,14 +49,12 @@ public class UgArmature : UgTrans
         for (int i = 0; i < data.slotDatas.Length; i++)
         {
             UgData.SlotData slotData = data.slotDatas[i];
-            Debug.Log(slotData.name);
             UgSlot slot = new UgSlot();
             slot.Init(slotData);
             slots.Add(slot.name, slot);
-            UgBone parent;
-            bones.TryGetValue(slotData.parent, out parent);
-            slot.parent = parent;
-            parent.addSlot(slot);
+            //UgBone parent;
+            //bones.TryGetValue(slotData.parent, out parent);
+            //parent.AddChild(slot);
             slotList.Add(slot);
         }
 
@@ -58,9 +64,9 @@ public class UgArmature : UgTrans
             UgSprite sprite = new UgSprite();
             sprite.Init(disData);
             sprites.Add(disData.name, sprite);
-            UgSlot parent;
-            slots.TryGetValue(disData.parent, out parent);
-            parent.addSprite(sprite);
+            //UgSlot parent;
+            //slots.TryGetValue(disData.parent, out parent);
+            //parent.AddChild(sprite);
             spriteList.Add(sprite);
         }
 
@@ -94,6 +100,7 @@ public class UgArmature : UgTrans
             UgTrans trans = item.Value;
             slots[trans.parentName].AddChild(trans);
         }
+        updateMatrix();
     }
 
     float frame = 0;
@@ -134,7 +141,9 @@ public class UgArmature : UgTrans
             UgData.SlotAnimationCollect sac = anim.slotAnimations[i];
             slots[sac.name].UpdateFrame(frame);
         }
-
-
+        //foreach (UgTrans trans in children) {
+        //    trans.updateMatrix();
+        //}
+        updateMatrix();
     }
 }

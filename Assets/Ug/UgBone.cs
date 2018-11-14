@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,24 +10,28 @@ public class UgBone : UgTrans
     int frameIndex = 0;
     UgData.BoneFrameData cacheFrame;
     Vector2 cacheFrameRange;
-    public UgBone parent;
-    public List<UgSlot> slots;
-    private Vector2 startPos;
-    private Vector2 startScale = Vector2.one;
-    private float startRotation = 0;
+    //public UgBone parent;
+    //public List<UgSlot> slots;
+    //public List<UgBone> bones;
 
     public void Init(UgData.BoneData data)
     {
         base.Init(data);
-        startPos = data.pos;
-        startRotation = data.rotation;
-        startScale = data.scale;
-        slots = new List<UgSlot>();
+
+        //slots = new List<UgSlot>();
+        //bones = new List<UgBone>();
+        
     }
 
-    public void addSlot(UgSlot slot) {
-        slots.Add(slot);
-    }
+    //public void addSlot(UgSlot slot) {
+    //    slots.Add(slot);
+    //}
+
+    //public void addBone(UgBone bone)
+    //{
+    //    bones.Add(bone);
+    //}
+
 
     public void SetAnimData(UgData.BoneFrameData[] frames)
     {
@@ -47,6 +52,8 @@ public class UgBone : UgTrans
         float max = min + cacheFrame.duration;
         cacheFrameRange = new Vector2(min, max);
     }
+
+
 
     public void UpdateFrame(float frame)
     {
@@ -82,12 +89,10 @@ public class UgBone : UgTrans
             if (next.transPos)
                 pos = Vector2.Lerp(startPos, startPos + next.pos, d);
             if (next.transScale)
-                scale = Vector2.Lerp(startScale, startScale + next.scale, d);
+                scale = Vector2.Lerp(startScale, next.scale, d);
             if (next.transRotate)
                 rotation = Mathf.Lerp(startRotation,startRotation + next.rotation, d);
         }
-
-
         testObj.transform.localScale = new Vector3(scale.x, scale.y, 1);
         testObj.transform.localPosition = pos;
         testObj.transform.localEulerAngles = new Vector3(0, 0, rotation);

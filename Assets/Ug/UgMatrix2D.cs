@@ -226,7 +226,7 @@ public class UgMatrix2D : MonoBehaviour {
         public UgMatrix2D CreateBox(float scaleX, float scaleY, float rotation = 0, float tx = 0, float ty = 0)
         {
 			if (rotation != 0) {
-				rotation = rotation / DEG_TO_RAD;
+				rotation = rotation * DEG_TO_RAD;
 				var u = Mathf.Cos(rotation);
 				var v =Mathf.Sin(rotation);
 				this.a = u * scaleX;
