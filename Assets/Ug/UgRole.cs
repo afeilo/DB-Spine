@@ -143,10 +143,13 @@ public class UgRole : MonoBehaviour
                                     //matrix.d += (bone.deltaMatrix.d) * vertexDatas.weights[weightoffset];
                                     //matrix.tx += (bone.deltaMatrix.tx) * vertexDatas.weights[weightoffset];
                                     //matrix.ty += (bone.deltaMatrix.ty) * vertexDatas.weights[weightoffset];
-                                    scale += (bone.scale - bone.startScale) * vertexDatas.weights[weightoffset];
-                                    rotation += (bone.rotation - bone.startRotation) * vertexDatas.weights[weightoffset];
-                                    trans += (bone.pos - bone.startPos) * vertexDatas.weights[weightoffset];
-                                    //vertex += bone.matrix.TransformPoint(pos.x, pos.y) * vertexDatas.weights[weightoffset];
+                                    //scale += (bone.scale - bone.startScale) * vertexDatas.weights[weightoffset];
+                                    //rotation += (bone.rotation - bone.startRotation) * vertexDatas.weights[weightoffset];
+                                    //trans += (bone.pos - bone.startPos) * vertexDatas.weights[weightoffset];
+                                    scale += new Vector2(bone.matrix.GetScaleX()-bone.startMatrix.GetScaleX(),bone.matrix.GetScaleY()-bone.startMatrix.GetScaleY())*vertexDatas.weights[weightoffset];
+                                    rotation += (bone.matrix.GetAngle() - bone.startMatrix.GetAngle()) * vertexDatas.weights[weightoffset];
+                                    trans += new Vector2(bone.matrix.tx - bone.startMatrix.tx,bone.matrix.ty-bone.startMatrix.ty) * vertexDatas.weights[weightoffset];
+                                    //vertex += bone.deltaMatrix.TransformPoint(pos.x, pos.y) * vertexDatas.weights[weightoffset];
                                 }
                                 weightoffset++;
                             }

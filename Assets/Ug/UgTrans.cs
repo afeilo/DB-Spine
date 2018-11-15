@@ -39,28 +39,23 @@ public class UgTrans
             //Debug.Log("updateMatrix");
             this.matrix = new UgMatrix2D();
             this.deltaMatrix = new UgMatrix2D();
+            this.startMatrix = new UgMatrix2D();
         }
         if (this.rotation == 0.0f)
         {
             this.matrix.a = 1.0f;
             this.matrix.b = 0.0f;
-            this.deltaMatrix.a = 0.0f;
-            this.deltaMatrix.b = 0.0f;
         }
         else
         {
             this.matrix.a = (float)Math.Cos(-Math.PI * this.rotation / 180);
             this.matrix.b = (float)Math.Sin(-Math.PI * this.rotation / 180);
-            this.deltaMatrix.a = (float)Math.Cos(-Math.PI * (this.rotation) / 180) - (float)Math.Cos(-Math.PI * (this.startRotation) / 180);
-            this.deltaMatrix.b = (float)Math.Sin(-Math.PI * (this.rotation) / 180) - (float)Math.Sin(-Math.PI * (this.startRotation) / 180);
         }
 
         //if (this.skew == 0.0f)
         //{
         this.matrix.c = -this.matrix.b;
         this.matrix.d = this.matrix.a;
-        this.deltaMatrix.c = -this.deltaMatrix.b;
-        this.deltaMatrix.d = this.deltaMatrix.a;
         //}
         //else
         //{
@@ -72,33 +67,25 @@ public class UgTrans
         {
             this.matrix.a *= this.scale.x;
             this.matrix.b *= this.scale.x;
-            this.deltaMatrix.a *= (this.scale.x - this.startScale.x);
-            this.deltaMatrix.b *= (this.scale.x - this.startScale.x);
         }
 
         if (scale.y != 1.0f)
         {
             this.matrix.c *= this.scale.y;
             this.matrix.d *= this.scale.y;
-            this.deltaMatrix.c *= (this.scale.y - this.startScale.y);
-            this.deltaMatrix.d *= (this.scale.y - this.startScale.y);
         }
 
         this.matrix.tx = this.pos.x;
         this.matrix.ty = this.pos.y;
-        this.deltaMatrix.tx = this.pos.x - this.startPos.x;
-        this.deltaMatrix.ty = this.pos.y - this.startPos.y;
+        matrix.CreateBox(scale.x,scale.y,-rotation,pos.x,pos.y);
         if (this.parent != null)
         {
             this.matrix.Concat(this.parent.matrix);
-            //this.deltaMatrix.Concat(this.parent.matrix);
+            startMatrix.CreateBox(this.startScale.x, this.startScale.y, -this.startRotation, this.startPos.x, this.startPos.y);
+            startMatrix.Concat(this.parent.startMatrix);
+            //deltaMatrix.SetTo(matrix.a-startMatrix.a,matrix.b-startMatrix.b,matrix.c-startMatrix.c,matrix.d-startMatrix.d,matrix.tx-startMatrix.tx,matrix.ty-startMatrix.ty);
         }
-        if (null == startMatrix) {
-            //Debug.Log("startMatrix");
-            this.startMatrix = new UgMatrix2D();
-            this.startMatrix.Copy(matrix);
-            //startMatrix = matrix.Clone();
-        }
+
         //foreach (UgTrans bone in children)
         //{
         //    Debug.Log(bone.name + " --- " + "updateMatrix");
